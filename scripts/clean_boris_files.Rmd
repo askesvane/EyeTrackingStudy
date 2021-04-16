@@ -30,16 +30,7 @@ path <- "../data/Boris_raw_data/"
 filenames_boris <- list.files(path = path, pattern = ".csv")
 
 # Create empty container to which data from each csv will be attached
-data_clean <- tibble(
-  time = numeric(),
-  total_length = numeric(),
-  FPS = numeric(),
-  behvaior = factor(),
-  behavioral_category = factor(),
-  status = factor(),
-  participantID = factor(), 
-  block = factor()
-)
+data_clean <- tibble()
 
 # Loop over all files in the folder and combine into one great dataframe.
 for (i in 1:length(filenames_boris)){
@@ -80,6 +71,8 @@ for (i in 1:length(filenames_boris)){
   
 }
 
+# remove temporary loop objects from the environment
+rm(boris, block, filename, filenames_boris, filepath, i, participantID, path)
 
 # save as csv file
 write_csv(data_clean,"../data/gathered_files/boris_cleaned.csv")

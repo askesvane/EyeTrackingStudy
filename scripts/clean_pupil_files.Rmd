@@ -1,0 +1,75 @@
+---
+title: "clean_pupil_files"
+author: "Aske Svane Qvist"
+date: "15 April 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages
+```{r}
+library(pacman)
+p_load(tidyverse, stringi, janitor)
+
+```
+
+
+
+## Import pupil data
+```{r}
+# Save path to the csv files
+path <- "../data/Pupil_Labs_raw_data/"
+
+# Create list of filenames
+filenames_pupil <- list.files(path = path, pattern = ".csv")
+
+# Create empty dataframes with appropriate column names
+data_clean <- tibble()
+
+# Loop over all files in the folder and combine into one great dataframe.
+for (i in 1:length(filenames_pupil)){
+  
+  # Get filenames one at a time
+  filename <- filenames_pupil[i]
+  
+  # Get ID and block from filename
+  participantID <- as.numeric(regmatches(filename, regexpr("[0-9]*[0-9]", filename)))
+  block <- as.numeric(stri_extract_last_regex(filename, "\\d{1}"))
+  
+  # Import data from filename
+  filepath = paste(path, filename, sep = "")
+  pupil <- read_csv(filepath)
+  
+  # Create ID and block columns and drop unnecessary column from the raw file (id and base_data)
+  pupil <- pupil %>% 
+    mutate(
+      participantID = participantID,
+      block = block) %>% 
+    dplyr::select(2,3,4,5,6,7,8,9,10,11,12,13,15,16)
+
+  # append data to df outside the loop
+  if (nrow(data_clean) == 0) {
+    data_clean <- pupil}
+  else {
+    data_clean <- rbind(data_clean, pupil)}
+}
+
+
+# remove temporary loop objects from the environment
+rm(pupil, block, filename, filenames_pupil, filepath, i, participantID, path)
+
+# save as csv file
+write_csv(data_clean,"../data/gathered_files/pupil_cleaned.csv")
+
+
+# Quick overview to spot potential mistakes
+# double check with nrows in each block for every ID
+summary <- data_clean %>% 
+  group_by(participantID, block) %>% 
+  summarise(fixations = n())
+
+```
+
