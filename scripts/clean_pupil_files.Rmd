@@ -9,14 +9,17 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Gather all the data from pupil (the Eye-Tracker)
+
+In this script, all the output files from the Eye-Tracker will be cleaned up and gathered in a single csv-file. Redundant columns will be dropped and participantID and block number from the filename will be added to columns in the dataframe. These correspond to the participantID and block columns in the 'pupil_cleaned' script and will thus enable merging the data. The final dataframe will be saved as 'pupil_cleaned.csv' in the folder 'gathered_files'.
+
 ## Packages
 ```{r}
+# I use pacman to import packages
 library(pacman)
 p_load(tidyverse, stringi, janitor)
 
 ```
-
-
 
 ## Import pupil data
 ```{r}
@@ -48,7 +51,8 @@ for (i in 1:length(filenames_pupil)){
     mutate(
       participantID = participantID,
       block = block) %>% 
-    dplyr::select(2,3,4,5,6,7,8,9,10,11,12,13,15,16)
+    # Drop unnecessary columns and only select relevant ones
+    dplyr::select(2,3,4,5,6,7,9,15,16) 
 
   # append data to df outside the loop
   if (nrow(data_clean) == 0) {
@@ -58,18 +62,25 @@ for (i in 1:length(filenames_pupil)){
 }
 
 
-# remove temporary loop objects from the environment
-rm(pupil, block, filename, filenames_pupil, filepath, i, participantID, path)
+```
+
+## Overview, write to csv and clean environment
+```{r}
+# Quick overview to spot potential mistakes
+summary <- data_clean %>% 
+  group_by(participantID, block) %>% 
+  summarise(fixations = n())
 
 # save as csv file
 write_csv(data_clean,"../data/gathered_files/pupil_cleaned.csv")
 
 
-# Quick overview to spot potential mistakes
-# double check with nrows in each block for every ID
-summary <- data_clean %>% 
-  group_by(participantID, block) %>% 
-  summarise(fixations = n())
+# remove temporary loop objects from the environment
+rm(pupil, block, filename, filenames_pupil, filepath, i, participantID, path, summary, data_clean)
 
 ```
+
+
+
+
 

@@ -24,7 +24,7 @@ p_load(tidyverse, rjson)
 ## Imprt json-file
 ```{r}
 # Import timestamps from the json file
-timestamps <- fromJSON(file = "../data/Pupil_Labs_raw_data/info.player.csv/info.player_P4_B1.json")
+timestamps <- fromJSON(file = "../data/Pupil_Labs_raw_data/info.player/info.player_P4_B1.json")
 timestamps <- as.data.frame(timestamps)
 
 # Imoort data from pupil lab eyetracker
@@ -35,11 +35,13 @@ pupil <- read_csv("../data/Pupil_Labs_raw_data/fixations_P4_B1.csv")
 boris <- read_csv("../data/Boris_cleaned/Part4_build1.csv")
 
 
-# The timestamps in fixations.csv are Pupil Timestamps. To convert them to UNIX timestamps you could calculate the difference between start_time_system_s and start_time_synced_s from info.player.csv, and apply that difference to the timestamps in fixations.csv.
+
 
 ```
 
-Create function changing timestamps from pupil to unix according to the document "transform timestamps into UNIX timestamps".
+## Create function changing timestamps from pupil to unix according to the document "transform timestamps into UNIX timestamps"
+
+The timestamps in fixations.csv are Pupil Timestamps. To convert them to UNIX timestamps you could calculate the difference between start_time_system_s and start_time_synced_s from info.player.csv, and apply that difference to the timestamps in fixations.csv.
 ```{r}
 
 # The function
@@ -138,8 +140,6 @@ for (fixation in 1:nrow(boris)){
   # Extract the row corresponding to the manually annotated fixation
   pupil_df_extract <- pupil_df_extract[pupil_df_extract$time_dif == min(pupil_df_extract$time_dif),]
 
-  
-  
   # column bind the two dfs
   combined <- cbind(row, pupil_df_extract)
   
