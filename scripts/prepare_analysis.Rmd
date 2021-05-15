@@ -1,0 +1,74 @@
+---
+title: "prepare_analysis"
+author: "Aske Svane Qvist"
+date: "15 May 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages
+```{r}
+# I use pacman to import packages
+library(pacman)
+p_load(tidyverse)
+
+```
+
+## Import all data
+```{r}
+# Importing the collected data from the gathered_files folder.
+data <- read_csv("../data/gathered_files/dataAll_export.csv")
+
+```
+
+## Function to subset data
+The Function will subset the data according to the first letter of the 'behavior'. If one wishes to keep all rows where the behavior starts will "l", that is the default parameter. This can be changed to u, A or B.
+```{r}
+# Defining the function
+SubsetByLetter <- function(d, behavior_first_letter = "l"){
+  
+  # Extract the first letter from 'behavior' and store it in new column
+  d$letter <- substring(d$behavior, 1, 1)
+  
+  # select only rows containing defined letter and drop the new column 'letter'
+  d <- d[d$letter == behavior_first_letter,-18]
+  
+  # Return the subset.
+  return(d)
+}
+
+# Apply the function to the data. Now, the data only contains rows where the behavior starts with "l".
+data = SubsetByLetter(data)
+
+```
+
+## Remove duplicated merged rows from the data
+Since the Boris and the Pupil data have been merged according similar timestamps, some rows from the Pupil data will inevitably be merged more than once to different timestamps in the Boris data. This is due to the fact that for each fixation in the Boris data, the fixation in the Pupil data with the shortest distance will be appended. If the fixation in the pupil data is the closest to more than one fixation in the Boris data, it will be appended more than once.
+
+If the duration of a fixation is longer than the time difference between a given fixation and the following, the row from the pupil data must have been falsly appended. I remove these.
+
+
+```{r}
+# Create two new columns, one with time duration in seconds corresponding to the other timestamps and one with the subsequent fixation timestamp. I use these two new columns to ensure that only fixations with realistic fixation durations are kept.
+data <- data %>% 
+  mutate(
+    duration_sek = duration_ms / 1000,
+    time_lead = lead(time))
+
+# Remove falsly merged rows.
+data <- data[data$time + data$duration_sek < data$time_lead,]
+
+```
+
+
+
+
+
+
+
+
+
+
