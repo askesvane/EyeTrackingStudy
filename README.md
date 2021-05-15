@@ -2,7 +2,7 @@
 
 ## Description
 This repository contains all scripts used to clean, wrangle, visualize, and prepare the data for subsequent analysis by Mihaela Taranu. 
-In the experiment, 7 children played with 14 LEGO bricks across 3 consecutive iterations. Eye tracking data were recorded with Pupil Labs. The videos extracted from Pupil Labs were subsequently manually annotated in Boris. Each time a new fixation was made on a different brick a new manual code was annotated. Thus, the raw data partly originates from Pupil Lab and partly from Boris. Both Pupil Lab and Boris generated a csv-file for every iteration (block) resulting in a total of 21 Boris files and 21 Pupil Lab files. As information from both the Pupil Lab and the Boris files are crucial for the study, all the files are being gathered into a single csv-file.
+In the experiment, 7 children played with 14 LEGO bricks across 3 consecutive iterations. Eye tracking data were recorded with [Pupil Labs](https://pupil-labs.com/). The videos extracted from Pupil Labs were subsequently manually annotated in [Boris](https://boris.readthedocs.io/en/latest/#). Each time a new fixation was made on a different brick a new manual code was annotated. Thus, the raw data partly originates from Pupil Lab and partly from Boris. Both Pupil Lab and Boris generated a csv-file for every iteration (block) resulting in a total of 21 Boris files and 21 Pupil Lab files. As information from both the Pupil Lab and the Boris files are crucial for the study, all the files are being gathered into a single csv-file.
 
 ## Repository structure and files
 This repository has the following directory structure:
@@ -19,11 +19,17 @@ This repository has the following directory structure:
 
 There are several scripts and they should be executed in an appropriate order. 
 
-__Clean and gather the Boris files__
+__Clean and gather the Boris files__ <br>
 The script 'clean_boris_files.Rmd' will import all files in the folder ```Boris_cleaned```, gather them into a single dataframe and drop redundant columns. The single output file will be stored in the folder ```gathered_files``` as 'boris_cleaned.csv'.
 
-__Clean and gather the Pupil Lab files__
+__Clean and gather the Pupil Lab files__<br>
 The script 'clean_pupil_files.Rmd' will import all files in the folder ```Pupil_Labs_raw_data```, gather them into a single dataframe and drop redundant columns. The single output file will be stored in the folder ```gathered_files``` as 'pupil_cleaned.csv'.
 
-__Merge the Pupil Lab and the Boris data__
+__Merge the Pupil Lab and the Boris data__<br>
 The script 'merge_data.Rmd' will take the two files, 'boris_cleaned.csv' and 'pupil_cleaned.csv', and merge them according to approximate timestamps. The timestamps in 'boris_cleaned.csv' are relative to each block of the experiment while the timestamps in 'pupil_cleaned.csv' are not. By subtracting the start recording timestamp of each block, the timestamps corresponding to the timestamps in 'boris_cleaned.csv' can be obtained. A more elaborate explanation of this method can be found [here](https://github.com/pupil-labs/pupil/issues/1823). The start recording timestamps are provided in the metadata of Pupil lab in the folder ```export_info``` under ```Pupil_Labs_raw_data```.
+
+__Prepare the data for analysis__<br>
+The script 'prepare_analysis.Rmd' will import the merged file 'dataAll.csv' containing both the Pupil Lab and the Boris data and prepare it for analysis and visulisations. A predefined function will be employed to filter out all rows that are not actual fixations (other behaviors). 
+
+Since the Boris and the Pupil data have been merged according similar timestamps, some rows from the Pupil data will inevitably be merged more than once to different timestamps in the Boris data. This is due to the fact that for each fixation in the Boris data, the fixation in the Pupil data with the shortest time difference will be appended. If the fixation in the pupil data is the closest to more than one fixation in the Boris data, it will be appended more than once. If the duration of a fixation is longer than the time difference between a given fixation and the following, the row from the pupil data must have been falsly appended. Such fixations are removed as well.
+
