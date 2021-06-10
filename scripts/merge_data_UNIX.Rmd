@@ -153,4 +153,35 @@ rm(b, i, ID, ID_idx, ID_list, json_file, json_path, start_time_synced_s, start_t
 
 
 
+# This should be deleted
+## Remove duplicated merged rows from the data
+Since the Boris and the Pupil data have been merged according similar timestamps, some rows from the Pupil data will inevitably be merged more than once to different timestamps in the Boris data. This is due to the fact that for each fixation in the Boris data, the fixation in the Pupil data with the shortest distance will be appended. If the fixation in the pupil data is the closest to more than one fixation in the Boris data, it will be appended more than once.
+
+If the duration of a fixation is longer than the time difference between a given fixation and the following, the row from the pupil data must have been falsly appended. I remove these.
+
+
+```{r}
+# Create two new columns, one with time duration in seconds corresponding to the other timestamps and one with the subsequent fixation timestamp. I use these two new columns to ensure that only fixations with realistic fixation durations are kept.
+data <- data %>% 
+  mutate(
+    duration_sek = duration_ms / 1000,
+    time_lead = lead(time))
+
+# Remove falsly merged rows.
+data <- data[data$time + data$duration_sek < data$time_lead,]
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 

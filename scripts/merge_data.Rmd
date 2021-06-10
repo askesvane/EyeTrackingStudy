@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This script merges the gathered Boris and Pupil files, 'boris_cleaned.csv' and 'pupil_cleaned.csv' according to similar timestamps. The fixation duration from the pupil data (recorded by the eye tracker) is to be employed in the analysis together with the manually annotated features of the bricks the children are looking at and interacting with.
 
-The timestamps in the boris data are relative to each block recording while the timestamps in the pupil data are not. From the metadata json-file exported from the eye-tracker (for every block recording), the start timestamp can be obtained. By subtracting this from every fixation timestamp, the timestamps will correspond to the timestamps in the boris data. For a more extensive explanation, see https://github.com/pupil-labs/pupil/issues/1823.
+The timestamps in the boris data are relative to each block recording while the timestamps in the pupil data are not. From the metadata export-file exported from the eye-tracker (for every block recording), the start timestamp can be obtained. By subtracting this from every fixation timestamp, the timestamps will correspond to the timestamps in the boris data. For a more extensive explanation, see https://github.com/pupil-labs/pupil/issues/1823.
 
 
 ## Import packages
@@ -32,7 +32,8 @@ pupil <- read_csv("../data/gathered_files/pupil_cleaned.csv")
 
 ```
 
-
+## Define fucntion to extract timestamp from the export file.
+The function takes and ID number and a block number and extracts the start_time from the export_info folder. This is done by pasting an appropriate filepath together.
 ```{r}
 # Function to get recording time stamp from the csv export file
 recording_start_time <- function(ID, b){
@@ -48,21 +49,6 @@ recording_start_time <- function(ID, b){
   # Extract the recorded start timestamp from the metafile. It is located in the cell [15,2] with the end time.
   # I extract inly the start time with regex
   start_time <- as.numeric(sub(" .*$", "", meta[7,2]))
-  
-  return(start_time)
-}
-
-# Function to get the recording timestamp from the json metadata file.
-recording_start_time_json <- function(ID, b){
-  # Save the filepath to the jsonfiles with the timestamps
-  json_path <- "../data/Pupil_Labs_raw_data/info.player/"
-
-  # Paste together a filename based on the current ID and block number.
-  json_file <- paste(json_path, "info.player_P", as.character(ID),"_B", as.character(b),".json", sep = "")
-  # import json-file and convert into df to enable easy data handling
-  timestamps <- as.data.frame(fromJSON(file = json_file))
-  # Extract the recorded start timestamo from the corresponding json file
-  start_time <- as.numeric(timestamps[1,"start_time_synced_s"]) # Pupil timestamp
   
   return(start_time)
 }
@@ -95,8 +81,8 @@ for (ID_idx in 1:length(ID_list)){
     boris_sub <- boris %>% filter(participantID == ID & block == b)
     
     # Get recording time stamp. This can be done using the start recording time from either the csv or the json file.
+    #start_recording <- recording_start_time(ID, b)
     start_recording <- recording_start_time(ID, b)
-    #start_recording <- recording_start_time_json(ID, b)
     
     
     # Subtract the recorded start timestamp from every timestamp in the block subset and save the new timestamp in 
@@ -162,7 +148,7 @@ summary <- dataAll %>%
             pupil_dur = max(time_pupil))
 
 # save as csv file
-write_csv(dataAll,"../data/gathered_files/dataAll.csv")
+write_csv(dataAll,"../data/gathered_files/dataAll_json.csv")
 
 
 # remove temporary loop objects from the environment
