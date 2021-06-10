@@ -31,9 +31,5 @@ The script 'merge_data.Rmd' will take the two files, 'boris_cleaned.csv' and 'pu
 __Prepare the data for analysis__<br>
 The script 'prepare_analysis.Rmd' will import the merged file 'dataAll.csv' containing both the Pupil Lab and the Boris data and prepare it for analysis and visulisations. A predefined function will be employed to filter out all rows that are not actual fixations (other behaviors). 
 
-## Contact
-The data pre-processing as well as visualisations have been conducted by Aske Svane Qvist, research assistant on the project. If you have any comments or questions as to how the data cleaning, tidying, and visualisation have been done, feel free to contact me:
-> __Aske Svane Qvist__
-> Mail: askesvane@gmail.com
-> Tlf. +45 52430411
+Since the Boris and the Pupil data have been merged according similar timestamps, some rows from the Pupil data will inevitably be merged more than once to different timestamps in the Boris data. This is due to the fact that for each fixation in the Boris data, the fixation in the Pupil data with the shortest time difference will be appended. If the fixation in the pupil data is the closest to more than one fixation in the Boris data, it will be appended more than once. If the duration of a fixation is longer than the time difference between a given fixation and the following, the row from the pupil data must have been falsly appended. Such fixations are removed as well.
 
