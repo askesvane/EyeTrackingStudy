@@ -33,7 +33,7 @@ The script 'prepare_analysis.Rmd' will import the merged file 'dataAll.csv' cont
 
 ## Contact
 The data pre-processing as well as visualisations have been conducted by Aske Svane Qvist, research assistant on the project. If you have any comments or questions as to how the data cleaning, tidying, and visualisation have been done, feel free to contact me:
-> __Aske Svane Qvist__
-> Mail: askesvane@gmail.com
+> __Aske Svane Qvist__<br>
+> Mail: askesvane@gmail.com<br>
 > Tlf. +45 52430411
 
