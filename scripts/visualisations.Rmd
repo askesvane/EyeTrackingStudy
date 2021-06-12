@@ -9,8 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Visualizations
-
 ### Packages
 ```{r}
 # I use pacman to import packages
@@ -122,6 +120,9 @@ ggplot(vis1,aes(x=Category, y = freq, fill=Category)) +
   labs(title = "Plot 1", subtitle = "The frequency of the first brick looked at by category") + 
   xlab("") + ylab("Frequency")
 
+# save plot
+ggsave("../plots/plot1.png", width = 7, height = 4)
+
 ```
 
 
@@ -174,6 +175,8 @@ ggplot(vis2, aes(x = Category, y = MEAN, fill = Category)) +
   labs(title = "Plot 2", subtitle = "The frequency of fixations by category across participants") + 
   xlab("") + ylab("Number of fixations")
 
+# save plot
+ggsave("../plots/plot2.png", width = 7, height = 4)
 
 ```
 
@@ -225,6 +228,8 @@ ggplot(vis3, aes(x = Category, y = MEAN, fill = Category)) +
   labs(title = "Plot 3", subtitle = "The total fixartion duration on the brick across the three blocks") + 
   xlab("") + ylab("Total fixation duration (ms)")
 
+# save plot
+ggsave("../plots/plot3.png", width = 7, height = 4)
 
 ```
 
@@ -275,6 +280,8 @@ ggplot(vis4, aes(x = Category, y = MEAN, fill = Category)) +
   labs(title = "Plot 4", subtitle = "The mean fixartion duration on the bricks across the three blocks") + 
   xlab("") + ylab("Mean fixation duration (ms)")
 
+# save plot
+ggsave("../plots/plot4.png", width = 7, height = 4)
 
 ```
 
@@ -345,6 +352,8 @@ ggplot(vis5, aes(x = Category, y = MEAN, fill = Category)) +
   labs(title = "Plot 5", subtitle = "The frequency of interactions with bricks within each category") + 
   xlab("") + ylab("Number of interactions")
 
+# save plot
+ggsave("../plots/plot5.png", width = 7, height = 4)
 
 ```
 
@@ -395,6 +404,9 @@ ggplot(vis6, aes(x = Category, y = MEAN, fill = Category)) +
   labs(title = "Plot 6", subtitle = "The total interaction duration with each brick category across the three blocks") + 
   xlab("") + ylab("Total interaction duration (ms)")
 
+# save plot
+ggsave("../plots/plot6.png", width = 7, height = 4)
+
 ```
 
 
@@ -444,6 +456,9 @@ ggplot(vis7, aes(x = Category, y = MEAN, fill = Category)) +
   # Add labels
   labs(title = "Plot 7", subtitle = "The mean interaction duration with the bricks across the three blocks") + 
   xlab("") + ylab("Mean interaction duration (ms)")
+
+# save plot
+ggsave("../plots/plot7.png", width = 7, height = 4)
 
 ```
 
